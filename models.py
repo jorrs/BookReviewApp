@@ -8,7 +8,6 @@ load_dotenv()
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 db = SQLAlchemy(app)
 
 class Book(db.Model):
@@ -17,9 +16,8 @@ class Book(db.Model):
     title = db.Column(db.String(100), nullable=False)
     author = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
-    
     reviews = db.relationship('Review', backref='book', lazy=True)
-    
+
     def to_json(self):
         return {
             'id': self.id,
@@ -36,7 +34,7 @@ class Review(db.Model):
     reviewer_name = db.Column(db.String(100), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.Text, nullable=True)
-    
+
     def to_json(self):
         return {
             'id': self.id,
@@ -63,7 +61,7 @@ def create_review(book_id):
     data = request.get_json()
     new_review = Review(
         book_id=book_id,
-        reviewer_name=data['review),reviewer_name'],
+        reviewer_name=data['reviewer_name'],
         rating=data['rating'],
         comment=data.get('comment')
     )
