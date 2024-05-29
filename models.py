@@ -10,6 +10,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+
 class Book(db.Model):
     __tablename__ = 'books'
     id = db.Column(db.Integer, primary_key=True)
@@ -26,6 +27,7 @@ class Book(db.Model):
             'description': self.description,
             'reviews': [review.to_json() for review in self.reviews]
         }
+
 
 class Review(db.Model):
     __tablename__ = 'reviews'
@@ -44,13 +46,19 @@ class Review(db.Model):
             'comment': self.comment
         }
 
+
 @app.route('/books', methods=['POST'])
 def create_book():
     data = request.get_json()
-    new_book = Book(title=data['title'], author=data['author'], description=data.get('description'))
+    new_book = Book(
+        title=data['title'], 
+        author=data['author'], 
+        description=data.get('description')
+    )
     db.session.add(new_book)
     db.session.commit()
     return jsonify(new_book.to_json()), 201
+
 
 @app.route('/books/<int:book_id>/reviews', methods=['POST'])
 def create_review(book_id):
@@ -69,10 +77,12 @@ def create_review(book_id):
     db.session.commit()
     return jsonify(new_review.to_json()), 201
 
+
 @app.route('/books', methods=['GET'])
 def get_books():
     books = Book.query.all()
     return jsonify([book.to_json() for book in books]), 200
+
 
 @app.route('/books/<int:book_id>', methods=['GET'])
 def get_book(book_id):
@@ -80,6 +90,7 @@ def get_book(book_id):
     if book:
         return jsonify(book.to_json()), 200
     return jsonify({'message': 'Book not found'}), 404
+
 
 if __name__ == '__main__':
     app.run(debug=True)
