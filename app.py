@@ -33,7 +33,7 @@ def get_book(book_id):
 def add_review(book_id):
     book = next((book for book in books_db if book['id'] == book_id), None)
     if book:
-        review = request.json
+        review = request.get_json()
         book['reviews'].append(review)
         return jsonify({"message": "Review added successfully."}), 201
     else:
