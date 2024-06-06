@@ -42,16 +42,9 @@ def handle_review(review_id):
 
 @lru_cache(maxsize=32)
 def get_reviews_length():
-    """
-    Caches and returns the length of reviews.
-    This is an over-simplification for educational purposes.
-    """
     return len(reviews)
 
 def clear_caches():
-    """
-    Clear cache when reviews list is updated.
-    """
     get_reviews_length.cache_clear()
 
 if __name__ == "__main__":
