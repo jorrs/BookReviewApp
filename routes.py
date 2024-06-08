@@ -16,29 +16,39 @@ def index():
 @app.route('/reviews', methods=['GET', 'POST'])
 def handle_reviews():
     if request.method == 'GET':
-        return jsonify(reviews)
+        return jsonify(reviews), 200
     elif request.method == 'POST':
-        review = request.json
-        reviews.append(review)
-        clear_caches()
-        return jsonify({"message": "Review added successfully!"}), 201
+        return add_review(request.json)
+
+def add_review(review):
+    reviews.append(review)
+    clear_caches()
+    return jsonify({"message": "Review added successfully!"}), 201
 
 @app.route('/reviews/<int:review_id>', methods=['GET', 'PUT', 'DELETE'])
-def handle_review(review_id):
+def review_operations(review_id):
     if review_id > get_reviews_length() or review_id < 1:
         return jsonify({"error": "Review not found"}), 404
     
     if request.method == 'GET':
-        return jsonify(reviews[review_id - 1])
+        return get_review(review_id)
     elif request.method == 'PUT':
-        review = request.json
-        reviews[review_id - 1] = review
-        clear_caches()
-        return jsonify({"message": "Review updated successfully!"})
+        return update_review(review_id, request.json)
     elif request.method == 'DELETE':
-        reviews.pop(review_id - 1)
-        clear_caches()
-        return jsonify({"message": "Review deleted successfully!"})
+        return delete_review(review_id)
+
+def get_review(review_id):
+    return jsonify(reviews[review_id - 1]), 200
+
+def update_review(review_id, review_data):
+    reviews[review_id - 1] = review_data
+    clear_caches()
+    return jsonify({"message": "Review updated successfully!"}), 200
+
+def delete_review(review_id):
+    reviews.pop(review_id - 1)
+    clear_caches()
+    return jsonify({"message": "Review deleted successfully!"}), 200
 
 @lru_cache(maxsize=32)
 def get_reviews_length():
