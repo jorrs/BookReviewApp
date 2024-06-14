@@ -2,39 +2,39 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 
-class ErrorBoundary extends React.Component {
+class AppErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { encounteredError: false };
   }
 
   static getDerivedStateFromError(error) {
-    return { hasError: true };
+    return { encounteredError: true };
   }
 
-  componentDidCatch(error, errorInfo) {
-    console.error("Uncaught error:", error, errorInfo);
+  componentDidCatch(error, errorDetails) {
+    console.error("Caught an unhandled error:", error, errorDetails);
   }
 
   render() {
-    if (this.state.hasError) {
-      return <h1>Something went wrong.</h1>;
+    if (this.state.encounteredError) {
+      return <h1>Oops! Something went wrong.</h1>;
     }
 
     return this.props.children; 
   }
 }
 
-const rootElement = document.getElementById('root');
-if (rootElement) {
+const appRootElement = document.getElementById('root');
+if (appRootElement) {
   ReactDOM.render(
     <React.StrictMode>
-      <ErrorBoundary>
+      <AppErrorBoundary>
         <App />
-      </ErrorBoundary>
+      </AppErrorBoundary>
     </React.StrictMode>,
-    rootElement
+    appRootElement
   );
 } else {
-  console.error('Failed to find the root element');
+  console.error('Unable to locate the app root element');
 }
