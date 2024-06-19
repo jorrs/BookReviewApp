@@ -20,12 +20,16 @@ const App: React.FC = () => {
   const [state, setState] = useState<AppState>({ books: [], reviews: [] });
 
   const addBook = (title: string, author: string) => {
+    const newBookId = state.books.length + 1; // Adjusted for improving the id generation logic.
     const newBook: Book = {
-      id: state.books.length + 1,
+      id: newBookId,
       title,
       author,
     };
-    setState({ ...state, books: [...state.books, newBook] });
+    setState(prevState => ({
+      ...prevState,
+      books: [...prevState.books, newBook]
+    }));
   };
 
   const addReview = (bookId: number, reviewText: string) => {
@@ -33,7 +37,14 @@ const App: React.FC = () => {
       bookId,
       reviewText,
     };
-    setState({ ...state, reviews: [...state.reviews, newReview] });
+    setState(prevState => ({
+      ...prevState,
+      reviews: [...prevState.reviews, newReview]
+    }));
+  };
+
+  const getReviewsByBookId = (bookId: number) => {
+    return state.reviews.filter(review => review.bookId === bookId);
   };
 
   return (
@@ -41,27 +52,22 @@ const App: React.FC = () => {
       <div>
         {state.books.map(book => (
           <div key={book.id}>
-            {book.title} by {book.author}
+            <div>{book.title} by {book.author}</div>
+            <button onClick={() => addReview(book.id, `Review for ${book.title}`)}>
+              Add Review for {book.title}
+            </button>
+            <div>
+              <strong>Reviews:</strong>
+              {getReviewsByBookId(book.id).map((review, index) => (
+                <div key={index}>{review.reviewText}</div>
+              ))}
+            </div>
           </div>
         ))}
       </div>
 
       <div>
         <button onClick={() => addBook('New Book', 'Author')}>Add Book</button>
-      </div>
-
-      <div>
-        {state.reviews.map((review, index) => (
-          <div key={index}>
-            Review for Book ID {review.bookId}: {review.reviewText}
-          </div>
-        ))}
-      </div>
-
-      <div>
-        <button onClick={() => addReview(1, 'This is an amazing book!')}>
-          Add Review for Book 1
-        </button>
       </div>
     </div>
   );
