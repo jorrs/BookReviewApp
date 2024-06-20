@@ -8,58 +8,60 @@ interface Book {
 
 interface Review {
   bookId: number;
-  reviewText: string;
+  content: string;
 }
 
 interface AppState {
-  books: Book[];
-  reviews: Review[];
+  bookList: Book[];
+  bookReviews: Review[];
 }
 
 const App: React.FC = () => {
-  const [state, setState] = useState<AppState>({ books: [], reviews: [] });
+  const [appState, setAppState] = useState<AppState>({ bookList: [], bookReviews: [] });
 
-  const addBook = (title: string, author: string) => {
-    const newBookId = state.books.length + 1; // Adjusted for improving the id generation logic.
+  const addNewBook = (title: string, author: string) => {
+    const nextBookId = appState.bookList.length + 1;
     const newBook: Book = {
-      id: newBookId,
+      id: nextBookId,
       title,
       author,
     };
-    setState(prevState => ({
-      ...prevState,
-      books: [...prevState.books, newBook]
+    setAppState((previousState) => ({
+      ...previousState,
+      bookList: [...previousState.bookList, newBook],
     }));
   };
 
-  const addReview = (bookId: number, reviewText: string) => {
+  const addNewReview = (bookId: number, content: string) => {
     const newReview: Review = {
       bookId,
-      reviewText,
+      content,
     };
-    setState(prevState => ({
-      ...prevState,
-      reviews: [...prevState.reviews, newReview]
+    setAppState((previousState) => ({
+      ...previousState,
+      bookReviews: [...previousState.bookReviews, newReview],
     }));
   };
 
-  const getReviewsByBookId = (bookId: number) => {
-    return state.reviews.filter(review => review.bookId === bookId);
+  const listReviewsByBookId = (bookId: number) => {
+    return appState.bookReviews.filter((review) => review.bookId === bookId);
   };
 
   return (
     <div>
       <div>
-        {state.books.map(book => (
+        {appState.bookList.map((book) => (
           <div key={book.id}>
-            <div>{book.title} by {book.author}</div>
-            <button onClick={() => addReview(book.id, `Review for ${book.title}`)}>
+            <div>
+              {book.title} by {book.author}
+            </div>
+            <button onClick={() => addNewReview(book.id, `Review for ${book.title}`)}>
               Add Review for {book.title}
             </button>
             <div>
               <strong>Reviews:</strong>
-              {getReviewsByBookId(book.id).map((review, index) => (
-                <div key={index}>{review.reviewText}</div>
+              {listReviewsByBookId(book.id).map((review, index) => (
+                <div key={index}>{review.content}</div>
               ))}
             </div>
           </div>
@@ -67,10 +69,10 @@ const App: React.FC = () => {
       </div>
 
       <div>
-        <button onClick={() => addBook('New Book', 'Author')}>Add Book</button>
+        <button onClick={() => addNewBook('New Title', 'New Author')}>Add Book</button>
       </div>
     </div>
   );
-}
+};
 
 export default App;
