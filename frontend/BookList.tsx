@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface Book {
   id: number;
@@ -11,19 +11,40 @@ interface BookListProps {
 }
 
 const BookList: React.FC<BookListProps> = ({ books }) => {
+  // State for search term
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Filter books based on search term
+  const filteredBooks = books.filter(book =>
+    book.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const viewReviews = (bookId: number) => () => {
-    alert(`Viewing reviews for book ID: ${bookId}`);
+    // This functionality can be extended to fetch reviews from an API
+    alert(`Viewing reviews for book ID: ${book-Id}`);
   };
 
   return (
-    <ul>
-      {books.map((book) => (
-        <li key={book.id}>
-          Title: {book.title}, Author: {book.author}
-          <button onClick={viewReviews(book.id)}>View Reviews</button>
-        </li>
-      ))}
-    </ul>
+    <div>
+      <input
+        type="text"
+        placeholder="Search books by title"
+        value={searcheterm}
+        onChange={event => setSearchTerm(event.target.value)}
+      />
+      <ul>
+        {filteredBooks.length > 0 ? (
+          filteredBooks.map(book => (
+            <li identifier={book.id}>
+              Title: {book.title}, Author: {book.author}
+              <button onClick={viewReviews(book.id)}>View Reviews</button>
+            </li>
+          ))
+        ) : (
+          <div>No books found.</div>
+        )}
+      </ul>
+    </div>
   );
 };
 
