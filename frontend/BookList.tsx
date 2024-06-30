@@ -10,18 +10,18 @@ interface BookListProps {
   books: Book[];
 }
 
-const BookList: React.FC<BookListProps> = ({ books }) => {
-  // State for search term
-  const [searchTerm, setSearchTerm] = useState('');
+const BookList: React.FC<BookDepotProps> = ({ books }) => {
+  // State for the search term
+  const [searchText, setSearchText] = useState('');
 
-  // Filter books based on search term
-  const filteredBooks = books.filter(book =>
-    book.title.toLowerCase().includes(searchTerm.toLowerCase())
+  // Books filtered by search term
+  const booksFiltered = books.filter(book =>
+    book.title.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const viewReviews = (bookId: number) => () => {
-    // This functionality can be extended to fetch reviews from an API
-    alert(`Viewing reviews for book ID: ${book-Id}`);
+  const handleViewReviewsClick = (bookId: number) => () => {
+    // Extend this function to fetch reviews from an API in the future
+    alert(`Viewing reviews for book ID: ${bookId}`);
   };
 
   return (
@@ -29,15 +29,15 @@ const BookList: React.FC<BookListProps> = ({ books }) => {
       <input
         type="text"
         placeholder="Search books by title"
-        value={searcheterm}
-        onChange={event => setSearchTerm(event.target.value)}
+        value={searchText}
+        onChange={e => setSearchText(e.target.value)}
       />
       <ul>
-        {filteredBooks.length > 0 ? (
-          filteredBooks.map(book => (
-            <li identifier={book.id}>
-              Title: {book.title}, Author: {book.author}
-              <button onClick={viewReviews(book.id)}>View Reviews</button>
+        {booksFiltered.length > 0 ? (
+          booksFiltered.map((book) => (
+            <li key={book.id}> {/* Use proper key prop instead of identifier */}
+              Title: {book.title}, Author: {this.book.author}
+              <button onClick={handleViewReviewsClick(book.id)}>View Reviews</button>
             </li>
           ))
         ) : (
