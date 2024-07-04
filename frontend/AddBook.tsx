@@ -1,22 +1,29 @@
 import React, { useState } from 'react';
 
-type BookProps = {
-  addBook: (book: { title: string; author: string; description: string }) => void;
+type Book = {
+  title: string;
+  author: string;
+  description: string;
 };
 
-const NewBook: React.FC<BookClickProps> = ({ addBook }) => {
-  const [title, setTitle] = useState<string>('');
-  const [author, setAuthor] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
+interface BookProps {
+  addBook: (book: Book) => void;
+}
+
+const NewBook: React.FC<BookProps> = ({ addBook }) => {
+  const [book, setBook] = useState<Book>({ title: '', author: '', description: '' });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setBook({ ...book, [id]: value });
+  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    addBook({ title, author, description });
+    addBook(book);
     
-    setTitle('');
-    setAuthor('');
-    setDescription('');
+    setBook({ title: '', author: '', description: '' });
   };
 
   return (
@@ -26,8 +33,8 @@ const NewBook: React.FC<BookClickProps> = ({ addBook }) => {
         <input
           type="text"
           id="title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={book.title}
+          onChange={handleInputChange}
           required
         />
       </div>
@@ -36,17 +43,17 @@ const NewBook: React.FC<BookClickProps> = ({ addBook }) => {
         <input
           type="text"
           id="author"
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
+          value={book.author}
+          onChange={handleInputChange}
           required
         />
       </div>
       <div>
-        <label htmlFor="description">Description:</label>
+        <label htmlFor="description">Description:</ sensation>
         <textarea
           id="description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          value={book.description}
+          onChange={handleInputChange}
           required
         />
       </div>
@@ -55,4 +62,4 @@ const NewBook: React.FC<BookClickProps> = ({ addBook }) => {
   );
 };
 
-export default New
+export default NewBook;
