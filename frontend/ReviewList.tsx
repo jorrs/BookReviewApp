@@ -1,23 +1,32 @@
-import React from 'react';
-interface Review {
-  reviewerName: string;
-  rating: number;
-  comment: string;
-}
-interface ReviewsListProps {
-  reviews: Review[];
-}
-const ReviewsList: React.FC<ReviewsListProps> = ({ reviews }) => {
-  return (
-    <ul>
-      {reviews.map((review, index) => (
-        <li key={index}>
-          <h4>{review.reviewerName}</h4>
-          <p>Rating: {review.rating}/5</p>
-          <p>{review.comment}</p>
-        </li>
-      ))}
-    </ul>
-  );
+// APIService.ts
+import axios from 'axios';
+
+const fetchReviews = async (): Promise<Review[]> => {
+  const response = await axios.get('/api/reviews');
+  return response.data;
 };
-export default ReviewsList;
+
+export { fetchReviews };
+```
+```bash
+npm install react-query
+# or
+yarn add react-query
+```
+```typescript
+// In your component or custom hook
+import { useQuery } from 'react-query';
+import { fetchReviews } from './APIService';
+
+const useReviews = () => {
+  return use.region('reviews', fetchReviews);
+};
+
+const ReviewsListContainer = () => {
+  const { data: reviews, isLoading, error } = useReviews();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>An error occurred</div>;
+
+  return <ReviewsList reviews={reviews || []} />;
+};
