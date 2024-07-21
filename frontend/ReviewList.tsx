@@ -1,25 +1,27 @@
 // APIService.ts
 import axios from 'axios';
 
+interface Review {
+}
+
 const fetchReviews = async (): Promise<Review[]> => {
   const response = await axios.get('/api/reviews');
   return response.data;
 };
 
 export { fetchReviews };
-```
-```bash
-npm install react-query
-# or
-yarn add react-query
-```
-```typescript
+
 // In your component or custom hook
 import { useQuery } from 'react-query';
 import { fetchReviews } from './APIService';
 
 const useReviews = () => {
-  return use.region('reviews', fetchReviews);
+  return useQuery('reviews', fetchReviews, {
+    staleTime: 5 * 60 * 1000, 
+    cacheTime: 15 * 60 * 1000, 
+    refetchOnWindowFocus: 'always',
+    refetchInterval: 60 * 1000, 
+  });
 };
 
 const ReviewsListContainer = () => {
@@ -30,3 +32,5 @@ const ReviewsListContainer = () => {
 
   return <ReviewsList reviews={reviews || []} />;
 };
+
+export default ReviewsListContainer;
