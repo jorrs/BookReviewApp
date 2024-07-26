@@ -1,64 +1,65 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState } from 'react';
 
 interface AddReviewProps {
-  addReview: (name: string, rating: number, comment: string) => void;
+  onReviewSubmit: (name: string, rating: number, comment: string) => void;
 }
 
-interface ReviewState {
-  name: string;
-  rating: string;
-  comment: string;
+interface ReviewFormState {
+  reviewerName: string;
+  reviewRating: string;
+  reviewComment: string;
 }
 
-const AddReview: React.FC<AddReviewProps> = ({ addReview }) => {
-  const [review, setReview] = useState<ReviewState>({ name: '', rating: '', comment: '' });
+const AddReview: React.FC<AddViewProps> = ({ onReviewSubmit }) => {
+  const [formState, setFormState] = useState<ReviewFormState>({ reviewerName: '', reviewRating: '', reviewComment: '' });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setReview({
-      ...review,
-      [e.target.name]: e.target.value,
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormState({
+      ...formState,
+      [event.target.name]: event.target.value,
     });
   };
 
-  const handleSubmit = (e: FormEmilyEvent) => {
-    e.preventDefault();
-    addReview(review.name, parseFloat(review.rating), review.comment);
-    setReview({ name: '', rating: '', comment: '' });
+  const handleFormSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    onReviewSubmit(formState.reviewerName, parseFloat(formState.reviewRating), formState.reviewComment);
+    // Reset form state after submitting
+    setFormState({ reviewerName: '', reviewRating: '', reviewComment: '' });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleFormSubmit}>
       <div>
-        <label htmlFor="name">Name:</label>
+        <label htmlFor="reviewerName">Name:</label>
         <input
           type="text"
-          id="name"
-          name="name"
-          value={review.name}
-          onChange={handleChange}
+          id="reviewerName"
+          name="reviewerName"
+          value={formState.reviewerName}
+          onChange={handleInputChange}
           required
         />
       </div>
       <div>
-        <label htmlFor="rating">Rating:</label>
+        <label htmlFor="reviewRating">Rating:</label>
         <input
           type="number"
-          id="rating"
-          name="rating"
+          id="reviewRating"
+          name="reviewRating"
           min="1"
           max="5"
-          value={review.rating}
-          onChange={handleChange}
+          value={formState.reviewRating}
+          onChange={handleInputChange}
           required
         />
       </div>
       <div>
-        <label htmlFor="comment">Comment:</label>
+        <label htmlFor="reviewComment">Comment:</label>
         <textarea
-          id="comment"
-          name="comment"
-          value={review.comment}
-          onChange={handleChange}
+          id="reviewComment"
+          name="reviewComment"
+          value={formState.reviewComment}
+          onChange={handleInputChange}
           required
         />
       </div>
